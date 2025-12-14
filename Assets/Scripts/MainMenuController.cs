@@ -36,6 +36,8 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Sprite backgroundSprite;
+    [SerializeField] private Button settingsButton; // Sağ üstteki ayarlar butonu
+    [SerializeField] private SettingsController settingsController; // Settings Controller referansı
 
     [Header("Sahne Ayarları")]
     [SerializeField] private string gameplaySceneName = "SampleScene";
@@ -55,6 +57,10 @@ public class MainMenuController : MonoBehaviour
         GenerateRevealPieces();
         RefreshCards();
         ConfigurePlayButton();
+        ConfigureSettingsButton();
+        
+        // Müzik MusicManager tarafından otomatik olarak yönetiliyor
+        // OnEnable ve OnSceneLoaded event'leri ile scene'ler arasında kesintisiz devam ediyor
     }
 
     private void OnEnable()
@@ -253,7 +259,12 @@ public class MainMenuController : MonoBehaviour
         {
             cardView.button.interactable = unlocked;
             cardView.button.onClick.RemoveAllListeners();
-            cardView.button.onClick.AddListener(() => StartLevel(config));
+            cardView.button.onClick.AddListener(() => 
+            {
+                // Level kartına tıklandığında titreşim
+                VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+                StartLevel(config);
+            });
         }
     }
 
@@ -280,10 +291,37 @@ public class MainMenuController : MonoBehaviour
         }
 
         playButton.onClick.RemoveAllListeners();
-        playButton.onClick.AddListener(StartNextLevel);
+        playButton.onClick.AddListener(() => 
+        {
+            // Play Level butonuna tıklandığında titreşim
+            VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+            StartNextLevel();
+        });
         
         // Play button'ın görünürlüğünü kontrol et
         UpdatePlayButtonVisibility();
+    }
+    
+    private void ConfigureSettingsButton()
+    {
+        if (settingsButton == null)
+        {
+            return;
+        }
+
+        settingsButton.onClick.RemoveAllListeners();
+        settingsButton.onClick.AddListener(OnSettingsButtonClicked);
+    }
+    
+    private void OnSettingsButtonClicked()
+    {
+        // Ayarlar butonuna tıklandığında titreşim
+        VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+        
+        if (settingsController != null)
+        {
+            settingsController.OpenSettings();
+        }
     }
     
     private void UpdatePlayButtonVisibility()

@@ -143,6 +143,9 @@ public class PuzzleUI : MonoBehaviour
     
     private void OnRestartClicked()
     {
+        // Restart butonuna tıklandığında titreşim
+        VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+        
         if (puzzleManager != null)
         {
             puzzleManager.CreatePuzzle();
@@ -151,11 +154,17 @@ public class PuzzleUI : MonoBehaviour
 
     private void OnNextLevelClicked()
     {
+        // Next Level butonuna tıklandığında titreşim
+        VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+        
         puzzleManager?.LoadNextLevel();
     }
 
     private void OnMainMenuClicked()
     {
+        // Main Menu butonuna tıklandığında titreşim
+        VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
+        
         if (string.IsNullOrWhiteSpace(mainMenuSceneName))
         {
             return;

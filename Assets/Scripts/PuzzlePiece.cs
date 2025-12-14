@@ -188,6 +188,9 @@ public class PuzzlePiece : MonoBehaviour
         {
             spriteRenderer.sortingOrder = 500;
         }
+        
+        // Kart tutulduğunda hafif titreşim
+        VibrationManager.Vibrate(VibrationType.Light, 0.05f);
     }
     
     private void Drag(Vector2 screenPoint)

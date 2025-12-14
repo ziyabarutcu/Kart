@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
 public class PuzzleManager : MonoBehaviour
@@ -21,6 +22,7 @@ public class PuzzleManager : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip snapSound;
+    [SerializeField] private AudioMixerGroup soundEffectsMixerGroup; // Ses efektleri için AudioMixerGroup
     
     [Header("UI")]
     [SerializeField] private PuzzleUI puzzleUI;
@@ -61,6 +63,16 @@ public class PuzzleManager : MonoBehaviour
         {
             return;
         }
+        
+        // AudioSource'a mixer group'u ata (ses efektleri için)
+        if (audioSource != null && soundEffectsMixerGroup != null)
+        {
+            audioSource.outputAudioMixerGroup = soundEffectsMixerGroup;
+        }
+        
+        // Müzik MusicManager tarafından yönetiliyor, burada çağırmaya gerek yok
+        // MusicManager zaten DontDestroyOnLoad ile scene'ler arasında kalıyor
+        // ve müzik çalıyorsa kaldığı yerden devam ediyor
         
         CreatePuzzle();
     }
