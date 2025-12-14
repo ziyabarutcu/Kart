@@ -120,6 +120,17 @@ public class PuzzlePiece : MonoBehaviour
             return;
         }
         
+        // Eğer puzzle başlatılıyorsa (animasyon sırasında), sürüklemeye izin verme
+        if (puzzleManager != null && puzzleManager.IsInitializing)
+        {
+            // Eğer sürükleniyorsa, zorla durdur
+            if (isDragging)
+            {
+                ForceEndDrag();
+            }
+            return;
+        }
+        
         UpdatePointerState();
         
         // Eğer bu parça sürükleniyorsa, sürükleme işlemlerini yap
@@ -148,6 +159,12 @@ public class PuzzlePiece : MonoBehaviour
     private void TryBeginDrag()
     {
         if (mainCamera == null)
+        {
+            return;
+        }
+        
+        // Eğer puzzle başlatılıyorsa (animasyon sırasında), sürüklemeye izin verme
+        if (puzzleManager != null && puzzleManager.IsInitializing)
         {
             return;
         }

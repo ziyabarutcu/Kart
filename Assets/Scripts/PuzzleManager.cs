@@ -54,6 +54,10 @@ public class PuzzleManager : MonoBehaviour
     private float runtimePixelsPerUnit;
     private int totalPieces;
     private int placedPieces;
+    private bool isInitializing = false; // Puzzle başlatılırken true olur
+    
+    // PuzzlePiece'lerin sürüklenip sürüklenemeyeceğini kontrol etmek için
+    public bool IsInitializing => isInitializing;
     
     private void Start()
     {
@@ -193,6 +197,9 @@ public class PuzzleManager : MonoBehaviour
         
         slotOccupants = new PuzzlePiece[slotPositions.Count];
         
+        // Puzzle başlatma modunu aktif et (placedPieces sayılmasın)
+        isInitializing = true;
+        
         // Önce parçaları doğru yerlerine yerleştir
         PlacePiecesInCorrectPositions();
         
@@ -204,6 +211,8 @@ public class PuzzleManager : MonoBehaviour
         else
         {
             ShufflePieces();
+            // Shuffle bitti, artık oyuncu etkileşimi başlayabilir
+            isInitializing = false;
         }
         
         if (puzzleUI != null)
@@ -225,6 +234,16 @@ public class PuzzleManager : MonoBehaviour
                 {
                     AssignPieceToSlot(piece, correctSlotIndex, -1, true);
                 }
+            }
+        }
+        
+        // Başlangıçta parçalar kilitli olmamalı (shuffle'dan önce)
+        // Shuffle sonrası oyuncu etkileşimi başlayacak
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            if (piece != null)
+            {
+                piece.SetPlacementState(false); // Kilitli değil
             }
         }
     }
@@ -303,6 +322,24 @@ public class PuzzleManager : MonoBehaviour
             if (piece != null && targetSlotIndex >= 0 && targetSlotIndex < slotPositions.Count)
             {
                 AssignPieceToSlot(piece, targetSlotIndex, -1, true);
+            }
+        }
+        
+        // Shuffle bitti, artık oyuncu etkileşimi başlayabilir
+        isInitializing = false;
+        
+        // Shuffle sonrası placedPieces sayacını sıfırla
+        // Çünkü shuffle sırasında parçalar karıştırıldı, hiçbiri doğru yerde olmamalı
+        placedPieces = 0;
+        
+        // Tüm parçaları oyuncu etkileşimi için kilidi aç
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            if (piece != null)
+            {
+                // Parçayı kilidi aç (oynatılabilir yap)
+                // Shuffle sonrası parçalar karışık olduğu için hiçbiri kilitli olmamalı
+                piece.SetPlacementState(false);
             }
         }
     }
@@ -410,6 +447,15 @@ public class PuzzleManager : MonoBehaviour
         for (int i = 0; i < puzzlePieces.Count; i++)
         {
             AssignPieceToSlot(puzzlePieces[i], slotIndices[i], -1, true);
+        }
+        
+        // Shuffle bitti, parçaları oyuncu etkileşimi için kilidi aç
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            if (piece != null && !piece.IsPlaced)
+            {
+                piece.SetPlacementState(false); // Kilitli değil, oynatılabilir
+            }
         }
     }
     
@@ -524,19 +570,30 @@ public class PuzzleManager : MonoBehaviour
             return;
         }
         
+        // Eğer puzzle başlatılıyorsa (PlacePiecesInCorrectPositions veya shuffle sırasında),
+        // placedPieces sayacını artırma. Sadece oyuncu gerçekten bir parça yerleştirdiğinde say.
+        if (isInitializing)
+        {
+            Debug.Log($"[PuzzleManager] UpdatePlacementState: isInitializing=true, sayılmıyor. Piece: {piece.CurrentSlotIndex} -> {piece.CorrectSlotIndex}, shouldLock={shouldLock}");
+            return;
+        }
+        
         if (shouldLock)
         {
             placedPieces++;
+            Debug.Log($"[PuzzleManager] Parça doğru yere yerleştirildi! placedPieces: {placedPieces}/{totalPieces}");
             PlaySnapSound();
             
             if (placedPieces >= totalPieces)
             {
+                Debug.Log("[PuzzleManager] Tüm parçalar yerleştirildi! Puzzle tamamlandı!");
                 OnPuzzleCompleted();
             }
         }
         else
         {
             placedPieces = Mathf.Max(0, placedPieces - 1);
+            Debug.Log($"[PuzzleManager] Parça yanlış yere taşındı. placedPieces: {placedPieces}/{totalPieces}");
         }
     }
 
