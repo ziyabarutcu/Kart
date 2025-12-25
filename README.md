@@ -34,9 +34,15 @@ Oyunu tarayıcınızda direkt oynayabilirsiniz:
 
 
 <img width="341" height="602" alt="image" src="https://github.com/user-attachments/assets/b26b45f1-968a-4a19-943e-dfa950ae553f" />
+
+<img width="333" height="516" alt="image" src="https://github.com/user-attachments/assets/e7c73ea0-be98-40cf-b77a-408097f90261" />
+
 <img width="356" height="566" alt="image" src="https://github.com/user-attachments/assets/f73cf599-ef08-47b4-8cba-b9bd7703002e" />
+
 <img width="343" height="519" alt="image" src="https://github.com/user-attachments/assets/b449332f-fa56-4060-abf2-89edb08c876c" />
+
 <img width="305" height="562" alt="image" src="https://github.com/user-attachments/assets/6b267a7e-c12b-42f7-8d7c-cd310789d5f5" />
+
 <img width="307" height="158" alt="image" src="https://github.com/user-attachments/assets/121b1b78-9d8c-4830-9558-8d8b8c1ca2a2" />
 
 
