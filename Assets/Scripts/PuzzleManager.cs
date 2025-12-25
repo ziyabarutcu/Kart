@@ -406,11 +406,35 @@ public class PuzzleManager : MonoBehaviour
     
     private Sprite CreateSpriteFromTexture(int gridX, int gridY)
     {
-        int pieceWidth = Mathf.FloorToInt(pieceSizePixels.x);
-        int pieceHeight = Mathf.FloorToInt(pieceSizePixels.y);
-
+        // Başlangıç pozisyonunu hesapla
         int startX = Mathf.FloorToInt(gridX * pieceSizePixels.x);
         int startY = Mathf.FloorToInt((gridSizeY - 1 - gridY) * pieceSizePixels.y);
+        
+        // Parça boyutunu hesapla - son parçalar kalan pikseli kapsayacak şekilde
+        int pieceWidth;
+        int pieceHeight;
+        
+        // Son sütundaki parçalar için kalan genişliği ekle
+        if (gridX == gridSizeX - 1)
+        {
+            // Son sütun: başlangıçtan görselin sonuna kadar
+            pieceWidth = puzzleImage.width - startX;
+        }
+        else
+        {
+            pieceWidth = Mathf.CeilToInt(pieceSizePixels.x);
+        }
+        
+        // Son satırdaki parçalar için kalan yüksekliği ekle
+        if (gridY == 0) // gridY 0 en üst satır (Unity'de Y ters)
+        {
+            // Son satır: başlangıçtan görselin sonuna kadar
+            pieceHeight = puzzleImage.height - startY;
+        }
+        else
+        {
+            pieceHeight = Mathf.CeilToInt(pieceSizePixels.y);
+        }
 
         Rect rect = new Rect(startX, startY, pieceWidth, pieceHeight);
         float pixelsPerUnitToUse = runtimePixelsPerUnit > 0f ? runtimePixelsPerUnit : pixelsPerUnit;

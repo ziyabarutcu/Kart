@@ -8,11 +8,18 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Canvas settingsCanvas;
     [SerializeField] private Canvas mainCanvas; // Ana menü canvas'ı
     
+    [Header("UI Elements")]
+    [SerializeField] private Image backgroundBlocker; // Ana Canvas'daki blocker Image
+    
     [Header("Buttons")]
     [SerializeField] private Button closeButton; // X butonu
     [SerializeField] private Button musicToggleButton; // Sol buton - Müzik
     [SerializeField] private Button soundEffectsToggleButton; // Orta buton - Ses efektleri
     [SerializeField] private Button vibrationToggleButton; // Sağ buton - Titreşim
+    
+    [Header("Button Icons")]
+    [SerializeField] private Sprite musicOnIcon; // Müzik açık ikonu
+    [SerializeField] private Sprite musicOffIcon; // Müzik kapalı ikonu
     
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer; // AudioMixer asset'i
@@ -31,6 +38,12 @@ public class SettingsController : MonoBehaviour
         if (settingsCanvas != null)
         {
             settingsCanvas.gameObject.SetActive(false);
+        }
+        
+        // Background blocker'ı başlangıçta gizle
+        if (backgroundBlocker != null)
+        {
+            backgroundBlocker.gameObject.SetActive(false);
         }
         
         // Buton event'lerini ayarla
@@ -74,9 +87,46 @@ public class SettingsController : MonoBehaviour
             settingsCanvas.gameObject.SetActive(true);
             isSettingsOpen = true;
             
-            // Ana canvas'ı tıklanamaz hale getir (GraphicRaycaster'ı devre dışı bırak)
-            DisableMainCanvasInteraction();
+            // Blocker'ı aktif et (ana Canvas'ı kapatmak yerine)
+            if (backgroundBlocker != null)
+            {
+                backgroundBlocker.gameObject.SetActive(true);
+            }
+            
+            // Ana Canvas'ın butonlarını disable et
+            DisableMainCanvasButtons();
+            
+            // Ayarlar açıldığında buton ikonlarını güncelle (butonlar artık aktif)
+            RefreshButtonIcons();
         }
+    }
+    
+    private void RefreshButtonIcons()
+    {
+        // Müzik durumunu oku ve ikonu güncelle
+        // Önce PlayerPrefs'ten oku, eğer AudioMixer varsa gerçek durumu kontrol et
+        bool musicEnabled = GetActualMusicState();
+        UpdateMusicButtonIcon(musicEnabled);
+    }
+    
+    private bool GetActualMusicState()
+    {
+        // Önce PlayerPrefs'ten oku
+        bool prefState = PlayerPrefs.GetInt(MUSIC_ENABLED_KEY, 1) == 1;
+        
+        // Eğer AudioMixer varsa, gerçek volume değerini kontrol et
+        if (audioMixer != null)
+        {
+            float currentVolume;
+            if (audioMixer.GetFloat(musicVolumeParameter, out currentVolume))
+            {
+                // Volume -80dB veya daha düşükse müzik kapalı
+                return currentVolume > -79f;
+            }
+        }
+        
+        // AudioMixer yoksa veya parametre bulunamazsa PlayerPrefs değerini kullan
+        return prefState;
     }
     
     public void CloseSettings()
@@ -89,50 +139,59 @@ public class SettingsController : MonoBehaviour
             settingsCanvas.gameObject.SetActive(false);
             isSettingsOpen = false;
             
-            // Ana canvas'ı tekrar tıklanabilir hale getir
-            EnableMainCanvasInteraction();
+            // Blocker'ı kapat
+            if (backgroundBlocker != null)
+            {
+                backgroundBlocker.gameObject.SetActive(false);
+            }
+            
+            // Ana Canvas'ın butonlarını tekrar aktif et
+            EnableMainCanvasButtons();
         }
     }
     
-    private void DisableMainCanvasInteraction()
+    private void DisableMainCanvasButtons()
     {
+        // Ana Canvas'daki tüm butonları bul ve disable et
         if (mainCanvas != null)
         {
-            // Canvas'ın GraphicRaycaster component'ini devre dışı bırak
-            GraphicRaycaster raycaster = mainCanvas.GetComponent<GraphicRaycaster>();
-            if (raycaster != null)
+            Button[] buttons = mainCanvas.GetComponentsInChildren<Button>(true);
+            foreach (Button btn in buttons)
             {
-                raycaster.enabled = false;
+                // Settings Canvas'daki butonları hariç tut
+                if (settingsCanvas != null && btn.transform.IsChildOf(settingsCanvas.transform))
+                {
+                    continue;
+                }
+                btn.interactable = false;
             }
-            
-            // Alternatif olarak, CanvasGroup kullanarak tüm etkileşimi kapatabiliriz
-            CanvasGroup canvasGroup = mainCanvas.GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
+        }
+        
+        // Settings Canvas'ın GraphicRaycaster'ının aktif olduğundan emin ol
+        if (settingsCanvas != null)
+        {
+            GraphicRaycaster settingsRaycaster = settingsCanvas.GetComponent<GraphicRaycaster>();
+            if (settingsRaycaster != null)
             {
-                canvasGroup = mainCanvas.gameObject.AddComponent<CanvasGroup>();
+                settingsRaycaster.enabled = true;
             }
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false; // Raycast'i engelle ama görünürlüğü koru
         }
     }
     
-    private void EnableMainCanvasInteraction()
+    private void EnableMainCanvasButtons()
     {
+        // Ana Canvas'daki tüm butonları tekrar aktif et
         if (mainCanvas != null)
         {
-            // Canvas'ın GraphicRaycaster component'ini tekrar aktif et
-            GraphicRaycaster raycaster = mainCanvas.GetComponent<GraphicRaycaster>();
-            if (raycaster != null)
+            Button[] buttons = mainCanvas.GetComponentsInChildren<Button>(true);
+            foreach (Button btn in buttons)
             {
-                raycaster.enabled = true;
-            }
-            
-            // CanvasGroup'u tekrar aktif et
-            CanvasGroup canvasGroup = mainCanvas.GetComponent<CanvasGroup>();
-            if (canvasGroup != null)
-            {
-                canvasGroup.interactable = true;
-                canvasGroup.blocksRaycasts = true;
+                // Settings Canvas'daki butonları hariç tut
+                if (settingsCanvas != null && btn.transform.IsChildOf(settingsCanvas.transform))
+                {
+                    continue;
+                }
+                btn.interactable = true;
             }
         }
     }
@@ -142,15 +201,50 @@ public class SettingsController : MonoBehaviour
         // Butona tıklandığında titreşim
         VibrationManager.Vibrate(VibrationType.Medium, 0.1f);
         
-        bool currentState = PlayerPrefs.GetInt(MUSIC_ENABLED_KEY, 1) == 1;
+        // Gerçek müzik durumunu al (PlayerPrefs veya AudioMixer'dan)
+        bool currentState = GetActualMusicState();
         bool newState = !currentState;
         
+        // Yeni durumu kaydet
         PlayerPrefs.SetInt(MUSIC_ENABLED_KEY, newState ? 1 : 0);
         PlayerPrefs.Save();
         
+        // Müzik ayarlarını uygula
         ApplyMusicSettings(newState);
         
-        Debug.Log($"[SettingsController] Müzik: {(newState ? "Açık" : "Kapalı")}");
+        // İkonu güncelle
+        UpdateMusicButtonIcon(newState);
+        
+        Debug.Log($"[SettingsController] Müzik: {(newState ? "Açık" : "Kapalı")} (PlayerPrefs: {PlayerPrefs.GetInt(MUSIC_ENABLED_KEY, 1)})");
+    }
+    
+    private void UpdateMusicButtonIcon(bool musicEnabled)
+    {
+        if (musicToggleButton == null)
+        {
+            return;
+        }
+        
+        // Butonun Image component'ini bul
+        Image buttonImage = musicToggleButton.GetComponent<Image>();
+        if (buttonImage == null)
+        {
+            // Eğer butonun kendisinde Image yoksa, child'ında ara
+            buttonImage = musicToggleButton.GetComponentInChildren<Image>();
+        }
+        
+        if (buttonImage != null)
+        {
+            // Müzik durumuna göre ikonu değiştir
+            if (musicEnabled && musicOnIcon != null)
+            {
+                buttonImage.sprite = musicOnIcon;
+            }
+            else if (!musicEnabled && musicOffIcon != null)
+            {
+                buttonImage.sprite = musicOffIcon;
+            }
+        }
     }
     
     private void ToggleSoundEffects()
@@ -220,6 +314,8 @@ public class SettingsController : MonoBehaviour
         // Müzik ayarını yükle
         bool musicEnabled = PlayerPrefs.GetInt(MUSIC_ENABLED_KEY, 1) == 1;
         ApplyMusicSettings(musicEnabled);
+        // Not: İkon güncellemesi OpenSettings()'te RefreshButtonIcons() ile yapılacak
+        // Çünkü Awake()'de butonlar henüz aktif olmayabilir
         
         // Ses efektleri ayarını yükle
         bool soundEffectsEnabled = PlayerPrefs.GetInt(SOUND_EFFECTS_ENABLED_KEY, 1) == 1;

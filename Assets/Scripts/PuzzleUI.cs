@@ -52,17 +52,8 @@ public class PuzzleUI : MonoBehaviour
             overlayMainMenuButton.gameObject.SetActive(true);
             overlayMainMenuButton.interactable = true; // Oyun esnasında aktif
             
-            // Butonun üstte olmasını sağla (RectTransform anchor ayarları)
-            RectTransform rectTransform = overlayMainMenuButton.GetComponent<RectTransform>();
-            if (rectTransform != null)
-            {
-                // Anchor'ları üst ortaya ayarla
-                rectTransform.anchorMin = new Vector2(0.5f, 1f);
-                rectTransform.anchorMax = new Vector2(0.5f, 1f);
-                rectTransform.pivot = new Vector2(0.5f, 1f);
-                // Üstten biraz aşağı (örneğin 50 piksel)
-                rectTransform.anchoredPosition = new Vector2(0f, -50f);
-            }
+            // Not: Pozisyon Scene'de ayarlandığı için burada değiştirmiyoruz
+            // Anchor ayarları Scene'de yapılmalı (üst ortaya)
         }
     }
     
@@ -94,24 +85,31 @@ public class PuzzleUI : MonoBehaviour
             completionText.text = "Puzzle Completed!";
         }
 
+        // Restart butonunu göster ve aktif yap
+        if (restartButton != null)
+        {
+            restartButton.gameObject.SetActive(true);
+            restartButton.interactable = true;
+        }
+
+        // Next Level butonunu göster (eğer sonraki level varsa)
         if (nextLevelButton != null)
         {
             nextLevelButton.gameObject.SetActive(canGoToNextLevel);
             nextLevelButton.interactable = canGoToNextLevel;
         }
         
-        // Completion panel açıldığında üstteki overlay menu butonunu inaktif yap
+        // Completion panel açıldığında üstteki overlay menu butonunu (MainMenuButton1) gizle
         if (overlayMainMenuButton != null)
         {
-            overlayMainMenuButton.interactable = false; // Inaktif yap ama görünür kalsın (veya gizle)
-            overlayMainMenuButton.gameObject.SetActive(false); // Gizle
+            overlayMainMenuButton.gameObject.SetActive(false);
         }
         
-        // Completion panel'deki mainMenuButton'u göster ve aktif yap
+        // Completion panel'deki mainMenuButton'u (MainMenuButton2) göster ve aktif yap
         if (mainMenuButton != null)
         {
             mainMenuButton.gameObject.SetActive(true);
-            mainMenuButton.interactable = true; // Aktif yap
+            mainMenuButton.interactable = true;
         }
     }
     
@@ -122,22 +120,27 @@ public class PuzzleUI : MonoBehaviour
             completionPanel.SetActive(false);
         }
 
+        // Panel kapandığında panel içindeki butonları gizle
+        if (restartButton != null)
+        {
+            restartButton.gameObject.SetActive(false);
+        }
+
         if (nextLevelButton != null)
         {
             nextLevelButton.gameObject.SetActive(false);
         }
         
-        // Completion panel kapandığında üstteki overlay menu butonunu aktif yap ve göster
-        if (overlayMainMenuButton != null)
-        {
-            overlayMainMenuButton.gameObject.SetActive(true);
-            overlayMainMenuButton.interactable = true; // Aktif yap
-        }
-        
-        // Completion panel'deki mainMenuButton'u gizle
         if (mainMenuButton != null)
         {
             mainMenuButton.gameObject.SetActive(false);
+        }
+        
+        // Completion panel kapandığında üstteki overlay menu butonunu (MainMenuButton1) tekrar göster ve aktif yap
+        if (overlayMainMenuButton != null)
+        {
+            overlayMainMenuButton.gameObject.SetActive(true);
+            overlayMainMenuButton.interactable = true;
         }
     }
     
