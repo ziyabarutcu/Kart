@@ -33,6 +33,8 @@ Oyunu tarayıcınızda direkt oynayabilirsiniz:
  🖼️ Ekran Görüntüleri
 
 *Ekran görüntüleri eklenecek*
+<img width="341" height="602" alt="image" src="https://github.com/user-attachments/assets/b26b45f1-968a-4a19-943e-dfa950ae553f" />
+
 
  🚀 Kurulum
 
