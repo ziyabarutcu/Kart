@@ -33,7 +33,7 @@ Oyunu tarayıcınızda direkt oynayabilirsiniz:
  🖼️ Ekran Görüntüleri
 
 
-<img width="341" height="602" alt="image" src="https://github.com/user-attachments/assets/b26b45f1-968a-4a19-943e-dfa950ae553f" />
+<img width="333" height="554" alt="image" src="https://github.com/user-attachments/assets/7c4f7171-2b25-4769-a46a-361ce240f91d" />
 
 <img width="333" height="516" alt="image" src="https://github.com/user-attachments/assets/e7c73ea0-be98-40cf-b77a-408097f90261" />
 
