@@ -1,8 +1,8 @@
-# 🧩 Kart - Yapboz Oyunu
+🧩 Kart - Yapboz Oyunu
 
 Unity ile geliştirilmiş modern bir yapboz (jigsaw puzzle) oyunu. Parçaları sürükleyip bırakarak görselleri tamamlayın!
 
-## 📋 İçindekiler
+📋 İçindekiler
 
 - [Özellikler](#özellikler)
 - [Ekran Görüntüleri](#ekran-görüntüleri)
@@ -13,7 +13,13 @@ Unity ile geliştirilmiş modern bir yapboz (jigsaw puzzle) oyunu. Parçaları s
 - [Geliştirme](#geliştirme)
 - [Lisans](#lisans)
 
-## ✨ Özellikler
+🎮 Oyunu Oyna
+🌐 Web'de Oyna
+Oyunu tarayıcınızda direkt oynayabilirsiniz:
+[▶️ Oyunu Oyna](https://ziyabarutcu.github.io/Kart/) ]
+
+
+ ✨ Özellikler
 
 - 🎮 **Sürükle-Bırak Mekanikleri**: Parçaları dokunarak veya fare ile sürükleyip doğru yerlerine yerleştirin
 - 📊 **Seviye Sistemi**: Bölümler halinde organize edilmiş çoklu seviyeler
@@ -24,19 +30,19 @@ Unity ile geliştirilmiş modern bir yapboz (jigsaw puzzle) oyunu. Parçaları s
 - 🎨 **Animasyonlu Karıştırma**: Oyun başlarken parçalar animasyonlu olarak karıştırılır
 - 📱 **Android Desteği**: APK olarak derlenebilir
 
-## 🖼️ Ekran Görüntüleri
+ 🖼️ Ekran Görüntüleri
 
 *Ekran görüntüleri eklenecek*
 
-## 🚀 Kurulum
+ 🚀 Kurulum
 
-### Gereksinimler
+ Gereksinimler
 
 - Unity 2022.3 veya üzeri
 - .NET Framework 4.8 veya üzeri
 - Android SDK (Android build için)
 
-### Adımlar
+ Adımlar
 
 1. Projeyi klonlayın:
 ```bash
@@ -50,9 +56,9 @@ cd kart
 
 4. Gerekli paketler otomatik olarak yüklenecektir
 
-## 🎯 Kullanım
+🎯 Kullanım
 
-### Oyunu Oynama
+ Oyunu Oynama
 
 1. Ana menüden bir seviye seçin
 2. Parçalar otomatik olarak karıştırılacak
@@ -60,7 +66,7 @@ cd kart
 4. Tüm parçalar yerleştirildiğinde seviye tamamlanır
 5. Sonraki seviyeye geçebilir veya ana menüye dönebilirsiniz
 
-### Seviye Oluşturma
+Seviye Oluşturma
 
 1. Unity Editor'da `Assets/Data/Levels` klasörüne gidin
 2. Sağ tık → `Create → Puzzle → Level Config`
@@ -69,7 +75,7 @@ cd kart
    - Grid boyutlarını ayarlayın (2x2'den 10x10'a kadar)
    - Bölüm ID ve seviye indeksini belirleyin
 
-## 📁 Proje Yapısı
+📁 Proje Yapısı
 
 ```
 Kart/
@@ -93,32 +99,32 @@ Kart/
 └── ProjectSettings/          # Unity proje ayarları
 ```
 
-## 🔧 Teknik Detaylar
+🔧 Teknik Detaylar
 
-### Ana Bileşenler
+ Ana Bileşenler
 
-#### PuzzleManager
+PuzzleManager
 - Puzzle oluşturma ve yönetimi
 - Parça yerleştirme mantığı
 - Seviye tamamlama kontrolü
 - Animasyonlu karıştırma sistemi
 
-#### PuzzlePiece
+PuzzlePiece
 - Dokunma/sürükleme algılama
 - Snap-to-slot mekanizması
 - Doğru yerleştirme kontrolü
 
-#### LevelProgress
+LevelProgress
 - PlayerPrefs kullanarak ilerleme kaydı
 - Seviye kilitleme/açma sistemi
 - Bölüm bazlı ilerleme takibi
 
-#### MusicManager
+MusicManager
 - Singleton pattern ile müzik yönetimi
 - Sahne değişimlerinde müzik devamlılığı
 - AudioMixer entegrasyonu
 
-### Özellikler
+Özellikler
 
 - **Grid Sistemi**: 2x2'den 10x10'a kadar özelleştirilebilir grid boyutları
 - **Snap Mekanizması**: Parçalar doğru yere yaklaştığında otomatik yerleşir
@@ -126,35 +132,35 @@ Kart/
 - **Ses Sistemi**: Müzik ve ses efektleri için ayrı AudioMixer grupları
 - **Mobil Optimizasyon**: Android için optimize edilmiş kontroller
 
-## 🛠️ Geliştirme
+🛠️ Geliştirme
 
-### Yeni Özellik Ekleme
+Yeni Özellik Ekleme
 
 1. İlgili script dosyasını düzenleyin
 2. Unity Editor'da test edin
 3. Değişiklikleri commit edin
 
-### Build Alma
+Build Alma
 
-#### Android APK
+Android APK
 
 1. `File → Build Settings`
 2. Platform olarak Android'i seçin
 3. `Player Settings`'den gerekli ayarları yapın
 4. `Build` butonuna tıklayın
 
-### Debug Modları
+ Debug Modları
 
 - `R` tuşu: Seviye ilerlemesini sıfırla (MainMenu'de)
 - Console logları: Detaylı debug bilgileri
 
-## 📝 Notlar
+📝 Notlar
 
 - İlerleme verileri `PlayerPrefs` kullanılarak saklanır
 - Müzik yönetimi `DontDestroyOnLoad` ile sahneler arasında devam eder
 - Parçalar başlangıçta doğru yerlerinde görünür, sonra animasyonlu olarak karıştırılır
 
-## 🤝 Katkıda Bulunma
+🤝 Katkıda Bulunma
 
 1. Fork edin
 2. Feature branch oluşturun (`git checkout -b feature/YeniOzellik`)
@@ -162,17 +168,17 @@ Kart/
 4. Branch'inizi push edin (`git push origin feature/YeniOzellik`)
 5. Pull Request oluşturun
 
-## 📄 Lisans
+📄 Lisans
 
 Bu proje [Lisans Adı] altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
 
-## 👤 Yazar
+👤 Yazar
 
 **Ziya**
 
 - GitHub: [@kullaniciadi](https://github.com/kullaniciadi)
 
-## 🙏 Teşekkürler
+🙏 Teşekkürler
 
 - Unity Technologies
 - TextMesh Pro
